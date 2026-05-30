@@ -28,54 +28,27 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script>
-        // إعدادات الاتصال
-        const _url = 'https://domwjbvbcpfpcivhqqiq.supabase.co';
-        const _key = 'sb_publishable_qZHWXaBx1INTzlFbmFvcEg_4-aTMWxM';
-        const supabase = supabase.createClient(_url, _key);
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    const _url = 'https://domwjbvbcpfpcivhqqiq.supabase.co';
+    const _key = 'sb_publishable_qZHWXaBx1INTzlFbmFvcEg_4-aTMWxM';
+    const supabase = supabase.createClient(_url, _key);
 
-        // وظيفة جلب المنتجات
-        async function loadProducts() {
-            const { data, error } = await supabase.from('products').select('*');
-            const list = document.getElementById('products-list');
+    async function checkConnection() {
+        try {
+            const { data, error } = await supabase.from('products').select('*').limit(1);
             if (error) {
-                list.innerHTML = "خطأ في الاتصال: " + error.message;
-                return;
-            }
-            list.innerHTML = '';
-            data.forEach(item => {
-                list.innerHTML += `
-                    <div class="card">
-                        <img src="${item.image_url || 'https://via.placeholder.com/150'}">
-                        <h4>${item.name}</h4>
-                        <p>${item.price} ريال</p>
-                    </div>`;
-            });
-        }
-
-        // وظيفة الإضافة (ربطها عبر ID بدلاً من onclick في HTML)
-        document.getElementById('addBtn').addEventListener('click', async () => {
-            const name = document.getElementById('pName').value;
-            const price = document.getElementById('pPrice').value;
-            const img = document.getElementById('pImg').value;
-
-            if(!name || !price) return alert("يرجى ملء البيانات");
-
-            const { error } = await supabase
-                .from('products')
-                .insert([{ name: name, price: price, image_url: img }]);
-
-            if (error) {
-                alert("فشل الإضافة: " + error.message);
+                alert("فشل الاتصال بسوبابيز: " + error.message);
             } else {
-                alert("تمت الإضافة بنجاح!");
-                loadProducts();
+                alert("نجح الاتصال! وجدنا " + data.length + " منتجات.");
             }
-        });
+        } catch (e) {
+            alert("خطأ غير متوقع: " + e.message);
+        }
+    }
+    checkConnection();
+</script>
 
-        // تشغيل الجلب عند البداية
-        loadProducts();
-    </script>
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
 <script>eruda.init();</script>
 </body>
